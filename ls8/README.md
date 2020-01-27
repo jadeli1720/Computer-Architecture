@@ -59,11 +59,11 @@ but you'll have to implement those three above instructions first!
 
 ## Step 0: IMPORTANT: inventory what is here!
 
-* Make a list of files here.
-* Write a short 3-10-word description of what each file does.
-* Note what has been implemented, and what hasn't.
-* Read this whole file.
-* Skim the spec.
+* [] Make a list of files here.
+* [] Write a short 3-10-word description of what each file does.
+* [] Note what has been implemented, and what hasn't.
+* [] Read this whole file.
+* [] Skim the spec.
 
 ## Step 1: Add the constructor to `cpu.py`
 
