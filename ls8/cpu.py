@@ -7,6 +7,10 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
+        # TODO: Add list of properties to hold 256 bytes of memory 
+        # Add 8 general-purpose registers
+        # Add properties for any internal registers you need --> pc (program counter)
+        # Look at below functions to see what is being used but has not been instantiated
         pass
 
     def load(self):
@@ -62,4 +66,17 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+        # TODO: implement this function
+        # needs to read the memory address that's stored in the register pc and store that result in ir: Instruction Register
+            # local variable can be used
+        # some instructions require 2 bytes of data after the pc
+        # Read STEP 3 in read me for more details
+        # If-elifs, PC+1 and PC+2, operand_a and operand_b, ram_read(), PC needs to be updated
         pass
+
+
+
+    # TODO: add ram_read method --> should accept the address to read and return the value stored there
+        # NOTE: could use the MDR and MAR as arguments here: 
+    # TODO: add ram_write method --> should accept a value to write, and the address to write it to.
+        # NOTE: could use the MDR and MAR as arguments here: 
