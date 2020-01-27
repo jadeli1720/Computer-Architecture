@@ -7,11 +7,12 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        # TODO: Add list of properties to hold 256 bytes of memory 
+        # TODO: Add list of properties to hold 256 bytes of memory -->ram
+        self.ram = [0] * 255
         # Add 8 general-purpose registers
+        self.reg = [0] * 8
         # Add properties for any internal registers you need --> pc (program counter)
-        # Look at below functions to see what is being used but has not been instantiated
-        pass
+        self.pc = 0
 
     def load(self):
         """Load a program into memory."""

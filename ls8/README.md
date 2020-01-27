@@ -61,11 +61,11 @@ but you'll have to implement those three above instructions first!
 
 * [x] Make a list of files here.
 * [x] Write a short 3-10-word description of what each file does.
-* [] Note what has been implemented, and what hasn't.
-* [] Read this whole file.
-* [] Skim the spec.
+* [x] Note what has been implemented, and what hasn't.
+* [x] Read this whole file.
+* [x] Skim the spec.
 
-## Step 1: Add the constructor to `cpu.py`
+## Step 1: Add the constructor to `cpu.py` [x]
 
 Add list properties to the `CPU` class to hold 256 bytes of memory and 8
 general-purpose registers.
