@@ -76,8 +76,18 @@ class CPU:
         pass
 
 
+    # MAR contains the address that IS being read or written to
+    # MDR contains the data that WAS read or the data to write
 
-    # TODO: add ram_read method --> should accept the address to read and return the value stored there
-        # NOTE: could use the MDR and MAR as arguments here: 
-    # TODO: add ram_write method --> should accept a value to write, and the address to write it to.
-        # NOTE: could use the MDR and MAR as arguments here: 
+    def ram_read(self, mar): #access' the RAM inside the CPU object
+        """
+        Accepts the address to read and returns the value stored in memory.
+        """
+        self.ram[mar]
+    
+
+    def ram_write(self, mdr, mar):# access; the RAM inside the CPU object
+        """
+        Accepts a value to write, and the address to write to
+        """
+        self.ram[mar] = mdr
