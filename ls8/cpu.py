@@ -8,11 +8,12 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         # TODO: Add list of properties to hold 256 bytes of memory -->ram
-        self.ram = [0] * 255
+        self.ram = [0] * 256
         # Add 8 general-purpose registers
         self.reg = [0] * 8
         # Add properties for any internal registers you need --> pc (program counter)
         self.pc = 0
+        # Any other internal registers needed?
 
     def load(self):
         """Load a program into memory."""
@@ -67,13 +68,38 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        # TODO: implement this function
-        # needs to read the memory address that's stored in the register pc and store that result in ir: Instruction Register
-            # local variable can be used
-        # some instructions require 2 bytes of data after the pc
-        # Read STEP 3 in read me for more details
-        # If-elifs, PC+1 and PC+2, operand_a and operand_b, ram_read(), PC needs to be updated
-        pass
+        # needs to read the memory address that's stored in the register pc and store that result in ir
+        # counter and the address of the currently executing instruction
+        ir = self.pc
+
+        # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
+        operand_a = ram_read(ir + 1)
+        operand_b = ram_read(ir + 2)
+        running = True
+        
+        # depending on value of opcode --> HLT, LDI, and PRN?
+        # perform the actions needed for the instruction per LS-8 spec --> look at what the above do.
+        # if-elif cascade? --> look at Brady's example
+        while running:
+            # Execute instructions
+            # will need to change COMMAND to something else!!!
+            if  command == LDI: # --> Set the value of a register to an integer.
+                # DO SOMETHING
+                # what is our iterator?
+
+            elif command == PRN: # --> /Print to the console the decimal integer value that is stored in the given register.
+                # DO SOMETHING
+                # what is our iterator?
+
+            elif command == HLT: # Halt --> similar to what we did with Brady?
+                # halt operations
+                running = False
+                # what is our iterator?
+            else:
+                print(f"Error, unknown command")
+
+        
+        # After running code for any particular instruction, the PC needs to be updated to point to the next instruction for the next iteration of the loop in run(). The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode. See the LS-8 spec for details.
 
 
     # MAR contains the address that IS being read or written to
