@@ -82,22 +82,14 @@ class CPU:
         Accepts a value to write, and the address to write to
         """
         self.ram[mar] = mdr
+        
 
     def run(self):
         """Run the CPU."""
         LDI = 0b10000010
         PRN = 0b01000111
         HLT = 0b00000001 
-
-
-        # needs to read the memory address that's stored in the register pc and store that result in ir
-        # counter and the address of the currently executing instruction
-        ir = self.ram_read(self.pc)
         
-        # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
-        operand_a = self.ram_read(self.pc + 1)
-        operand_b = self.ram_read(self.pc + 2)
-
         running = True
         
         # depending on value of opcode --> HLT, LDI, and PRN
@@ -106,27 +98,34 @@ class CPU:
         # print(LDI)
         while running:
             # Execute instructions
+            ir = self.ram_read(self.pc)
+        
+            # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
+            operand_a = self.ram_read(self.pc + 1)
+            operand_b = self.ram_read(self.pc + 2)
             print("while statement", ir)
             if ir == LDI: # --> Set the value of a register to an integer.
-                print("LDI statement", LDI )
+                # print("LDI statement", LDI )
                 
-                self.reg[operand_a] += self.reg[operand_b]
+                self.reg[operand_a] = self.ram[operand_b]
                 self.pc += 3
 
             elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
-                self.reg = self.ram[pc +1]
-                print(f"You are printing {self.ram[self.reg]}") 
+                reg = self.ram_read(self.pc + 1)
+                self.reg[reg]
+                print(f"You are printing {self.reg[reg]}") 
                 self.pc += 2
 
             elif ir == HLT: # Halt --> similar to what we did with Brady?
                 # halt operations
                 print("Halt conditional")
                 running = False
-                self.pc += 1
+                self.pc +=1
 
             else:
                 print(f"Error, unknown command {ir}")
                 sys.exit(1)
+
 
 
         # After running code for any particular instruction, the PC needs to be updated to point to the next instruction for the next iteration of the loop in run(). The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode. See the LS-8 spec for details.
