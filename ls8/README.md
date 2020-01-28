@@ -103,7 +103,7 @@ We'll make use of these helper function later.
 Later on, you might do further initialization here, e.g. setting the initial
 value of the stack pointer.
 
-## Step 3: Implement the core of `CPU`'s `run()` method
+## Step 3: Implement the core of `CPU`'s `run()` method [x]
 
 This is the workhorse function of the entire processor. It's the most difficult
 part to write.
@@ -127,7 +127,7 @@ to point to the next instruction for the next iteration of the loop in `run()`.
 The number of bytes an instruction uses can be determined from the two high bits
 (bits 6-7) of the instruction opcode. See the LS-8 spec for details.
 
-## Step 4: Implement the `HLT` instruction handler
+## Step 4: Implement the `HLT` instruction handler [x]
 
 Add the `HLT` instruction definition to `cpu.py` so that you can refer to it by
 name instead of by numeric value.
@@ -139,14 +139,14 @@ you loaded.
 We can consider `HLT` to be similar to Python's `exit()` in that we stop
 whatever we are doing, wherever we are.
 
-## Step 5: Add the `LDI` instruction
+## Step 5: Add the `LDI` instruction [x]
 
 This instruction sets a specified register to a specified value.
 
 See the LS-8 spec for the details of what this instructions does and its opcode
 value.
 
-## Step 6: Add the `PRN` instruction
+## Step 6: Add the `PRN` instruction [x]
 
 This is a very similar process to adding `LDI`, but the handler is simpler. See
 the LS-8 spec.
