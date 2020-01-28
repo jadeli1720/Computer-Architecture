@@ -68,6 +68,8 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
+
+        
         # needs to read the memory address that's stored in the register pc and store that result in ir
         # counter and the address of the currently executing instruction
         ir = self.pc
@@ -82,19 +84,18 @@ class CPU:
         # if-elif cascade? --> look at Brady's example
         while running:
             # Execute instructions
-            # will need to change COMMAND to something else!!!
-            if  command == LDI: # --> Set the value of a register to an integer.
-                # DO SOMETHING
-                # what is our iterator?
+            if  ir == LDI: # --> Set the value of a register(ir) to an integer.
+                self.ram
+                # what is our iterator? --> ir
 
-            elif command == PRN: # --> /Print to the console the decimal integer value that is stored in the given register.
-                # DO SOMETHING
-                # what is our iterator?
+            elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
+               print(f"You are printing {self.ram}") 
 
-            elif command == HLT: # Halt --> similar to what we did with Brady?
+            elif ir == HLT: # Halt --> similar to what we did with Brady?
                 # halt operations
                 running = False
-                # what is our iterator?
+                ir += 1
+
             else:
                 print(f"Error, unknown command")
 
