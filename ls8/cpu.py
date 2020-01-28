@@ -105,19 +105,23 @@ class CPU:
             ir = self.ram_read(self.pc)
             # ir = self.ram[self.pc]
         
-            # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
+            # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a -->Position of R0 (register and index 0) is 0b00000000 == to  operand_b 
+
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
-            print("while statement", ir)
+            # print("while statement", ir)
 
             if ir == LDI: # --> Set the value of a register to an integer.
-                print("LDI statement", LDI )
-                self.reg[operand_a] += self.ram[operand_b]
+                # print("LDI statement", LDI )
+                print('operands a',operand_a, self.ram[operand_a]  ) # 0
+                print('operands b',operand_b, self.ram[operand_b] )
+                # print('operands',operand_a  )
+                self.reg[operand_a] = operand_b
                 self.pc += 3
 
             elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
                 reg = self.ram_read(self.pc + 1)
-                # self.reg[reg]
+                self.reg[reg]
                 print(f"You are printing {self.reg[reg]}") 
                 self.pc += 2
 
