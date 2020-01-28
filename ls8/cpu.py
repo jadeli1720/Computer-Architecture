@@ -96,11 +96,11 @@ class CPU:
         # perform the actions needed for the instruction per LS-8 spec --> look at what the opcode does
         # if-elif cascade? --> look at Brady's example
         # print(LDI)
-        
+
         while running:
             # Execute instructions
             ir = self.ram_read(self.pc)
-            # ir= self.ram(self.pc)
+            # ir= self.ram[self.pc]
         
             # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
             operand_a = self.ram_read(self.pc + 1)
@@ -109,7 +109,7 @@ class CPU:
 
             if ir == LDI: # --> Set the value of a register to an integer.
                 print("LDI statement", LDI )
-                self.reg[operand_a] = self.ram[operand_b]
+                self.reg[operand_a] += self.ram[operand_b]
                 self.pc += 3
 
             elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
