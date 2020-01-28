@@ -15,6 +15,7 @@ class CPU:
         self.pc = 0
         # Any other internal registers needed?
 
+
     def load(self):
         """Load a program into memory."""
 
@@ -66,45 +67,6 @@ class CPU:
 
         print()
 
-    def run(self):
-        """Run the CPU."""
-        LDI = 0b10000010
-        PRN = 0b01000111
-        HLT = 0b00000001 
-
-        # needs to read the memory address that's stored in the register pc and store that result in ir
-        # counter and the address of the currently executing instruction
-        ir = self.pc
-
-        # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
-        operand_a = self.ram_read(ir + 1)
-        operand_b = self.ram_read(ir + 2)
-        running = True
-        
-        # depending on value of opcode --> HLT, LDI, and PRN
-        # perform the actions needed for the instruction per LS-8 spec --> look at what the opcode does
-        # if-elif cascade? --> look at Brady's example
-        while running:
-            # Execute instructions
-            if  self.ram[ir] == LDI: # --> Set the value of a register(ir) to an integer.
-                print(f"made it for LDI")
-                ir += 3
-
-            elif self.ram[ir] == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
-                print(f"You are printing {self.ram}") 
-                ir += 2
-
-            elif self.ram[ir] == HLT: # Halt --> similar to what we did with Brady?
-                # halt operations
-                running = False
-                ir += 1
-
-            else:
-                print(f"Error, unknown command")
-                break
-
-        # After running code for any particular instruction, the PC needs to be updated to point to the next instruction for the next iteration of the loop in run(). The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode. See the LS-8 spec for details.
-
     # MAR contains the address that IS being read or written to
     # MDR contains the data that WAS read or the data to write
 
@@ -115,8 +77,58 @@ class CPU:
         self.ram[mar]
     
 
-    def ram_write(self, mdr, mar):# access; the RAM inside the CPU object
+    def ram_write(self, mar, mdr):# access; the RAM inside the CPU object
         """
         Accepts a value to write, and the address to write to
         """
         self.ram[mar] = mdr
+
+    def run(self):
+        """Run the CPU."""
+        LDI = 0b10000010
+        PRN = 0b01000111
+        HLT = 0b00000001 
+
+
+        # needs to read the memory address that's stored in the register pc and store that result in ir
+        # counter and the address of the currently executing instruction
+        ir = self.ram_read(self.pc)
+        
+        # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
+        operand_a = self.ram_read(self.pc + 1)
+        operand_b = self.ram_read(self.pc + 2)
+
+        running = True
+        
+        # depending on value of opcode --> HLT, LDI, and PRN
+        # perform the actions needed for the instruction per LS-8 spec --> look at what the opcode does
+        # if-elif cascade? --> look at Brady's example
+        # print(LDI)
+        while running:
+            # Execute instructions
+            print("while statement", ir)
+            if ir == LDI: # --> Set the value of a register to an integer.
+                print("LDI statement", LDI )
+                
+                self.reg[operand_a] += self.reg[operand_b]
+                self.pc += 3
+
+            elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
+                self.reg = self.ram[pc +1]
+                print(f"You are printing {self.ram[self.reg]}") 
+                self.pc += 2
+
+            elif ir == HLT: # Halt --> similar to what we did with Brady?
+                # halt operations
+                print("Halt conditional")
+                running = False
+                self.pc += 1
+
+            else:
+                print(f"Error, unknown command {ir}")
+                sys.exit(1)
+
+
+        # After running code for any particular instruction, the PC needs to be updated to point to the next instruction for the next iteration of the loop in run(). The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode. See the LS-8 spec for details.
+
+    
