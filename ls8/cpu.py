@@ -74,7 +74,8 @@ class CPU:
         """
         Accepts the address to read and returns the value stored in memory.
         """
-        self.ram[mar]
+        return self.ram[mar]
+
     
 
     def ram_write(self, mar, mdr):# access; the RAM inside the CPU object
@@ -99,8 +100,10 @@ class CPU:
 
         while running:
             # Execute instructions
+
+            # needs to read the memory address that's stored in register PC, and store that result in IR
             ir = self.ram_read(self.pc)
-            # ir= self.ram[self.pc]
+            # ir = self.ram[self.pc]
         
             # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b
             operand_a = self.ram_read(self.pc + 1)
@@ -114,7 +117,7 @@ class CPU:
 
             elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
                 reg = self.ram_read(self.pc + 1)
-                self.reg[reg]
+                # self.reg[reg]
                 print(f"You are printing {self.reg[reg]}") 
                 self.pc += 2
 
@@ -127,8 +130,6 @@ class CPU:
             else:
                 print(f"Error, unknown command {ir}")
                 sys.exit(1)
-
-
 
         # After running code for any particular instruction, the PC needs to be updated to point to the next instruction for the next iteration of the loop in run(). The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode. See the LS-8 spec for details.
 
