@@ -38,10 +38,13 @@ class CPU:
                     if num == "":
                         continue
                     
+                    # Convert binary string to integer
                     value = int(num, 2) # Base 10, but ls-8 is base 2
-                    # # save/write appropriate data to RAM
-                    print('saving value + address', self.ram_write(address, value))
+
+                    #  save/write appropriate data to RAM
                     self.ram_write(address, value)
+
+                    # Increment address'
                     address += 1
 
         except FileNotFoundError:
@@ -52,7 +55,8 @@ class CPU:
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "MUL": # --> multiply two register values
+            self.reg[reg_a] *= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -99,6 +103,7 @@ class CPU:
         LDI = 0b10000010
         PRN = 0b01000111
         HLT = 0b00000001 
+        MUL = 0b10100010
 
         running = True
         
@@ -127,14 +132,18 @@ class CPU:
                 self.reg[operand_a] = operand_b
                 self.pc += 3
 
-            elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
+            elif ir == MUL: # --> Multiply the values  using ALU
+                #use ALU --> what arguments does it take
+                self.alu("MUL", operand_a, operand_b)
+                self.pc += 3
+
+            elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register.
                 reg = self.ram_read(self.pc + 1)
                 self.reg[reg]
                 print(f"{self.reg[reg]} in now in the register") 
                 self.pc += 2
 
-            elif ir == HLT: # Halt --> similar to what we did with Brady?
-                # halt operations
+            elif ir == HLT: # Halt --> halt operations
                 print("Operations have been halted")
                 running = False
                 self.pc +=1
