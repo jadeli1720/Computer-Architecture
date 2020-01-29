@@ -14,7 +14,7 @@ class CPU:
         self.reg = [0] * 8
         # Add properties for any internal registers you need --> pc (program counter)
         self.pc = 0
-        # Any other internal registers needed?
+        self.sp = 7 # Stack Pointer
 
 
     def load(self, filename):
@@ -89,8 +89,6 @@ class CPU:
         """
         return self.ram[mar]
 
-    
-
     def ram_write(self, mar, mdr):# access; the RAM inside the CPU object
         """
         Accepts a value to write, and the address to write to
@@ -100,26 +98,26 @@ class CPU:
 
     def run(self):
         """Run the CPU."""
-        LDI = 0b10000010
-        PRN = 0b01000111
-        HLT = 0b00000001 
-        MUL = 0b10100010
+        LDI  = 0b10000010
+        PRN  = 0b01000111
+        HLT  = 0b00000001 
+        MUL  = 0b10100010
+        POP  = 0b01000110
+        PUSH = 0b01000101
 
         running = True
         
         while running:
             # Execute instructions
-
             # needs to read the memory address that's stored in register PC, and store that result in IR
             ir = self.ram_read(self.pc)
-        
+            SP = self.sp
             # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b which are equivalent to each other 
             # operand_a: 00000000 --> R0 (register at index 0 in memory) is equal to
             # operand_b: 00001000 --> The value 8
 
-
-            operand_a = self.ram_read(self.pc + 1)
-            operand_b = self.ram_read(self.pc + 2)
+            operand_a = self.ram_read(self.pc + 1) # --> First argument
+            operand_b = self.ram_read(self.pc + 2) # --> Second argument
             # print("while statement", ir)
 
             if ir == LDI: # --> Set the value of a register to an integer.
@@ -138,7 +136,7 @@ class CPU:
                 self.pc += 3
 
             elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register.
-                reg = self.ram_read(self.pc + 1)
+                reg = operand_a
                 self.reg[reg]
                 print(f"{self.reg[reg]} in now in the register") 
                 self.pc += 2
@@ -147,6 +145,29 @@ class CPU:
                 print("Operations have been halted")
                 running = False
                 self.pc +=1
+
+            elif ir == PUSH:
+                # reg == 1st argument
+                reg = operand_a
+                # grab the values we are putting on the reg
+                val = self.reg[reg]
+                # Decrement the SP.
+                self.reg[SP] -= 1
+                # Copy/write value in given register to address pointed to by SP. ram_write(mar, mdr)
+                self.ram_write(self.reg[SP], val)
+                # Increment PC by 2
+                self.pc += 2
+
+            elif ir == POP:
+                # reg == 1st argument
+                reg = operand_a
+                # grab values we are putting on the reg
+                val = self.ram_read[self.reg[SP]]
+                self.reg[reg] = val
+                # # Increment SP.
+                self.reg[SP] += 1
+                # # Increment PC by 2
+                self.pc += 2
 
             else:
                 print(f"Error, unknown command {ir}")
