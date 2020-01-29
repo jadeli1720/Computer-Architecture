@@ -208,7 +208,7 @@ second argument:
 x = int("1010101", 2)  # Convert binary string to integer
 ```
 
-## Step 8: Implement a Multiply and Print the Result
+## Step 8: Implement a Multiply and Print the Result [x]
 
 Extend your LS8 emulator to support the following program:
 
@@ -288,7 +288,7 @@ c = Foo()
 c.run()
 ```
 
-## Step 10: Implement System Stack
+## Step 10: Implement System Stack [x]
 
 All CPUs manage a _stack_ that can be used to store information temporarily.
 This stack resides in main memory and typically starts at the top of memory (at

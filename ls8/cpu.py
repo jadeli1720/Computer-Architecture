@@ -162,7 +162,7 @@ class CPU:
                 # reg == 1st argument
                 reg = operand_a
                 # grab values we are putting on the reg
-                val = self.ram_read[self.reg[SP]]
+                val = self.ram[self.reg[SP]]
                 self.reg[reg] = val
                 # # Increment SP.
                 self.reg[SP] += 1
