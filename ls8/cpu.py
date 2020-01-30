@@ -172,10 +172,26 @@ class CPU:
                 self.pc += 2
 
             elif ir == CALL:
-                pass
+                # address of instruction directly after CALL is pushed onto stack
+                val = operand_b
+                print(f"This is val: {}")
+                self.reg[SP] -= 1
+                self.ram[self.reg[SP]] = val
+                # PC is set to the address stored in the given register
+                reg = operand_a
+                subroutine_address = self.reg[reg]
+                print(f"CALLING to address {subroutine_address % 256}") 
+                # jump to that location in RAM --> execute the 1st instruction in the subroutine
+                self.pc = subroutine_address
 
             elif ir == RET:
-                pass
+                # return for the subroutine
+                return_address = self.reg[SP]
+                # Pop the value from the top of the stack and store it in the PC
+                self.pc = self.ram[return_address]
+                # Increment the SP by 1
+                self.reg[SP] += 1
+                print(f"RETURNING to address {return_address % 256}")
 
             else:
                 print(f"Error, unknown command {ir}")
