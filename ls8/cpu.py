@@ -2,6 +2,7 @@
 
 import sys
 
+
 class CPU:
     """Main CPU class."""
 
@@ -16,34 +17,46 @@ class CPU:
         # Any other internal registers needed?
 
 
-    def load(self):
+    def load(self, filename):
         """Load a program into memory."""
+        print("Loading", filename)
 
-        address = 0
+        try:
+            address = 0
 
-        # For now, we've just hardcoded a program:
+            # open file: save appropriate data to RAM
+            with open(filename) as f:
+                # read the contents line by line:
+                for line in f:
+                    # ignore the comments
+                    comment_split = line.split('#')
+                    # print("Comment split", comment_split)
+                    # use .strip() to get rid of any spaces
+                    num = comment_split[0].strip()
+                    # print("num", int(num, 2))
+                    # ignore blank lines
+                    if num == "":
+                        continue
+                    
+                    # Convert binary string to integer
+                    value = int(num, 2) # Base 10, but ls-8 is base 2
 
-        program = [
-            # From print8.ls8
-            0b10000010, # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111, # PRN R0
-            0b00000000,
-            0b00000001, # HLT
-        ]
+                    #  save/write appropriate data to RAM
+                    self.ram_write(address, value)
 
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
+                    # Increment address'
+                    address += 1
 
+        except FileNotFoundError:
+            print(f"{sys.arg[0]}: {filename} not found")
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
-        #elif op == "SUB": etc
+        elif op == "MUL": # --> multiply two register values
+            self.reg[reg_a] *= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -90,22 +103,20 @@ class CPU:
         LDI = 0b10000010
         PRN = 0b01000111
         HLT = 0b00000001 
-        
+        MUL = 0b10100010
+
         running = True
         
-        # depending on value of opcode --> HLT, LDI, and PRN
-        # perform the actions needed for the instruction per LS-8 spec --> look at what the opcode does
-        # if-elif cascade? --> look at Brady's example
-        # print(LDI)
-
         while running:
             # Execute instructions
 
             # needs to read the memory address that's stored in register PC, and store that result in IR
             ir = self.ram_read(self.pc)
-            # ir = self.ram[self.pc]
         
-            # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a -->Position of R0 (register and index 0) is 0b00000000 == to  operand_b 
+            # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b which are equivalent to each other 
+            # operand_a: 00000000 --> R0 (register at index 0 in memory) is equal to
+            # operand_b: 00001000 --> The value 8
+
 
             operand_a = self.ram_read(self.pc + 1)
             operand_b = self.ram_read(self.pc + 2)
@@ -113,28 +124,32 @@ class CPU:
 
             if ir == LDI: # --> Set the value of a register to an integer.
                 # print("LDI statement", LDI )
-                print('operands a',operand_a, self.ram[operand_a]  ) # 0
-                print('operands b',operand_b, self.ram[operand_b] )
+                                                                        #        R0    LDI
+                # print('operands a',operand_a, self.ram[operand_a]  )    # prints 0 and 130
+                #                                                         #      value    R0
+                # print('operands b',operand_b, self.ram[operand_b] )     # prints 8  and 0
                 # print('operands',operand_a  )
                 self.reg[operand_a] = operand_b
                 self.pc += 3
 
-            elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register(ir).
+            elif ir == MUL: # --> Multiply the values  using ALU
+                #use ALU --> what arguments does it take
+                self.alu("MUL", operand_a, operand_b)
+                self.pc += 3
+
+            elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register.
                 reg = self.ram_read(self.pc + 1)
                 self.reg[reg]
-                print(f"You are printing {self.reg[reg]}") 
+                print(f"{self.reg[reg]} in now in the register") 
                 self.pc += 2
 
-            elif ir == HLT: # Halt --> similar to what we did with Brady?
-                # halt operations
-                print("Halt conditional")
+            elif ir == HLT: # Halt --> halt operations
+                print("Operations have been halted")
                 running = False
                 self.pc +=1
 
             else:
                 print(f"Error, unknown command {ir}")
                 sys.exit(1)
-
-        # After running code for any particular instruction, the PC needs to be updated to point to the next instruction for the next iteration of the loop in run(). The number of bytes an instruction uses can be determined from the two high bits (bits 6-7) of the instruction opcode. See the LS-8 spec for details.
 
     
