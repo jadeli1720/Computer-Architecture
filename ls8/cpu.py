@@ -104,6 +104,8 @@ class CPU:
         MUL  = 0b10100010
         POP  = 0b01000110
         PUSH = 0b01000101
+        CALL = 0b01010000
+        RET  = 0b00010001
 
         running = True
         
@@ -122,7 +124,7 @@ class CPU:
 
             if ir == LDI: # --> Set the value of a register to an integer.
                 # print("LDI statement", LDI )
-                                                                        #        R0    LDI
+                                                                          #        R0    LDI
                 # print('operands a',operand_a, self.ram[operand_a]  )    # prints 0 and 130
                 #                                                         #      value    R0
                 # print('operands b',operand_b, self.ram[operand_b] )     # prints 8  and 0
@@ -168,6 +170,12 @@ class CPU:
                 self.reg[SP] += 1
                 # # Increment PC by 2
                 self.pc += 2
+
+            elif ir == CALL:
+                pass
+
+            elif ir == RET:
+                pass
 
             else:
                 print(f"Error, unknown command {ir}")
