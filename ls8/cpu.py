@@ -67,14 +67,17 @@ class CPU:
             if self.reg[reg_a] == self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000001
+                print(f'Equal {FL}')
             # if regA < regB: set Less [L] flag to 1 (True)
             if self.reg[reg_a] < self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000100
+                print(f'Less {FL}')
             # if regA > regB: set Greater [G] flag to 1 (True)
             if self.reg[reg_a] > self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000010
+                print(f'Greater {FL}')
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -113,8 +116,6 @@ class CPU:
         """
         self.ram[mar] = mdr
         
-    # We need to add: CMP instruction and equal flag, JMP instruction, JEQ & JNE
-
     def run(self):
         """Run the CPU."""
         # opcodes
@@ -225,12 +226,21 @@ class CPU:
             
             elif ir == CMP:
                 # Compare 2 values (2 arguments: regA & regB)
-
                 # Saw is cheatsheet this can be done in ALU. Use ALU here
                 self.alu("CMP", operand_a, operand_b)
                 print("Register in CMP", self.reg)
                 print("Flags in CMP", self.reg[self.fl])
                 self.pc += 3
+
+            # We need to add: JMP instruction, JEQ & JNE
+            elif ir == JMP:
+                # Jump to the address stored in the given register
+                reg_address = operand_a
+                print(f'Register Address {reg_address}')
+                # set the PC to the address stored in the given register
+                self.pc = self.reg[reg_address]
+                print(f'PC to Addy in stored in given register {self.pc}')
+                print("--------------------")
 
             else:
                 print(f"Error, unknown command {ir}")
