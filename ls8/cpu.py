@@ -57,6 +57,11 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "MUL": # --> multiply two register values
             self.reg[reg_a] *= self.reg[reg_b]
+        elif op == "CMP": 
+            # FL bits: 00000LGE --> how do we access LGE....by index 5,6,7 ?
+            # if regA = regB: set Equal [E] flag to 1 (True), otherwise 0 (False)
+            # if regA < regB: set Less [L] flag to 1 (True), otherwise 0 (False)
+            # if regA > regB: set Greater [G] flag to 1 (True), otherwise 0 (False)
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -95,9 +100,11 @@ class CPU:
         """
         self.ram[mar] = mdr
         
+    # We need to add: CMP instruction and equal flag, JMP instruction, JEQ & JNE
 
     def run(self):
         """Run the CPU."""
+        # opcodes
         LDI  = 0b10000010
         PRN  = 0b01000111
         HLT  = 0b00000001 
@@ -107,6 +114,10 @@ class CPU:
         PUSH = 0b01000101
         CALL = 0b01010000
         RET  = 0b00010001
+        CMP  = 0b10100111  #Can be put in the ALU according to the cheatsheet ?!?!
+        JMP  = 0b01010100
+        JEG  = 0b01010101
+        JNE  = 0b01010110
 
         running = True
         
@@ -198,6 +209,13 @@ class CPU:
                 # Increment the SP by 1
                 self.reg[SP] += 1
                 # print(f"RETURNING to address {return_address % 256}")
+            
+            elif ir == CMP:
+                # Compare 2 values (2 arguments: regA & regB)
+
+                # Saw is cheatsheet this can be done in ALU. Use ALU here
+                self.alu("CMP", operand_a, operand_b)
+                self.pc += 3
 
             else:
                 print(f"Error, unknown command {ir}")
