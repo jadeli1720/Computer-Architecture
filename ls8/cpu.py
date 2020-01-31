@@ -130,7 +130,7 @@ class CPU:
         RET  = 0b00010001
         CMP  = 0b10100111  #Can be put in the ALU according to the cheatsheet ?!?!
         JMP  = 0b01010100
-        JEG  = 0b01010101
+        JEQ  = 0b01010101
         JNE  = 0b01010110
 
         running = True
@@ -140,6 +140,7 @@ class CPU:
             # needs to read the memory address that's stored in register PC, and store that result in IR
             ir = self.ram_read(self.pc)
             SP = self.sp
+            FL = self.fl
             # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b which are equivalent to each other 
             # operand_a: 00000000 --> R0 (register at index 0 in memory) is equal to
             # operand_b: 00001000 --> The value 8
@@ -228,20 +229,28 @@ class CPU:
                 # Compare 2 values (2 arguments: regA & regB)
                 # Saw is cheatsheet this can be done in ALU. Use ALU here
                 self.alu("CMP", operand_a, operand_b)
-                print("Register in CMP", self.reg)
-                print("Flags in CMP", self.reg[self.fl])
+                # print("Register in CMP", self.reg)
+                # print("Flags in CMP", self.reg[self.fl])
+                # print("--------------------")
                 self.pc += 3
 
-            # We need to add: JMP instruction, JEQ & JNE
             elif ir == JMP:
                 # Jump to the address stored in the given register
                 reg_address = operand_a
-                print(f'Register Address {reg_address}')
+                print(f'JMP Register Address {reg_address}')
                 # set the PC to the address stored in the given register
                 self.pc = self.reg[reg_address]
                 print(f'PC to Addy in stored in given register {self.pc}')
                 print("--------------------")
 
+            # We need to add: JEQ & JNE
+            elif ir == JEQ:
+                # if [E] flag is TRUE
+                if FL == 0b00000001:
+                    # jump to the address stored in the given register
+                    reg_address = operand_a
+                    self.pc = self.reg[reg_address]
+        
             else:
                 print(f"Error, unknown command {ir}")
                 sys.exit(1)
