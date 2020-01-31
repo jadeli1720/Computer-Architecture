@@ -102,6 +102,7 @@ class CPU:
         PRN  = 0b01000111
         HLT  = 0b00000001 
         MUL  = 0b10100010
+        ADD  = 0b10100000
         POP  = 0b01000110
         PUSH = 0b01000101
         CALL = 0b01010000
@@ -121,7 +122,6 @@ class CPU:
             operand_a = self.ram_read(self.pc + 1) # --> First argument
             operand_b = self.ram_read(self.pc + 2) # --> Second argument
             # print("while statement", ir)
-
             if ir == LDI: # --> Set the value of a register to an integer.
                 # print("LDI statement", LDI )
                                                                           #        R0    LDI
@@ -130,6 +130,10 @@ class CPU:
                 # print('operands b',operand_b, self.ram[operand_b] )     # prints 8  and 0
                 # print('operands',operand_a  )
                 self.reg[operand_a] = operand_b
+                self.pc += 3
+
+            elif ir == ADD:
+                self.alu("ADD", operand_a, operand_b)
                 self.pc += 3
 
             elif ir == MUL: # --> Multiply the values  using ALU
@@ -173,14 +177,16 @@ class CPU:
 
             elif ir == CALL:
                 # address of instruction directly after CALL is pushed onto stack
-                val = operand_b
+                # print(f"PC {self.pc} ")
+                val = self.pc + 2
+                # PC is set to the address stored in the given register
+                reg_index = operand_a # --> self.ram_read(self.pc + 1)
+
+                subroutine_address = self.reg[reg_index]
                 self.reg[SP] -= 1
                 self.ram[self.reg[SP]] = val
-                # PC is set to the address stored in the given register
-                reg = operand_a
-                print(f"reg {reg}")
-                subroutine_address = self.reg[reg]
-                print(f"CALLING to address {subroutine_address % 256}") 
+                
+                # print(f"CALLING to address {subroutine_address % 256}") 
                 # jump to that location in RAM --> execute the 1st instruction in the subroutine
                 self.pc = subroutine_address
 
@@ -188,10 +194,10 @@ class CPU:
                 # return for the subroutine
                 return_address = self.reg[SP]
                 # Pop the value from the top of the stack and store it in the PC
-                self.pc = self.ram_read[return_address]
+                self.pc = self.ram_read(return_address)
                 # Increment the SP by 1
                 self.reg[SP] += 1
-                print(f"RETURNING to address {return_address % 256}")
+                # print(f"RETURNING to address {return_address % 256}")
 
             else:
                 print(f"Error, unknown command {ir}")
