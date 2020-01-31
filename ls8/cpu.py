@@ -67,17 +67,17 @@ class CPU:
             if self.reg[reg_a] == self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000001
-                # print(f'Equal {FL}')
+                print(f'Equal Flag = 1: {FL}')
             # if regA < regB: set Less [L] flag to 1 (True)
             if self.reg[reg_a] < self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000100
-                # print(f'Less {FL}')
+                print(f'Less Flag = 4: {FL}')
             # if regA > regB: set Greater [G] flag to 1 (True)
             if self.reg[reg_a] > self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000010
-                # print(f'Greater {FL}')
+                print(f'Greater Flag = 2: {FL}')
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -156,6 +156,7 @@ class CPU:
                 # print('operands b',operand_b, self.ram[operand_b] )     # prints 8  and 0
                 # print('operands',operand_a  )
                 self.reg[operand_a] = operand_b
+                print(f'{self.reg[operand_a]} is in R{operand_a}' )
                 self.pc += 3
 
             elif ir == ADD:
@@ -170,7 +171,8 @@ class CPU:
             elif ir == PRN: # --> /Print to the console the decimal integer value that is stored in the given register.
                 reg = operand_a
                 self.reg[reg]
-                print(f"{self.reg[reg]} in now in the register") 
+                print(f"{self.reg[reg]} in now in the register")
+                print("-------------------- \n") 
                 self.pc += 2
 
             elif ir == HLT: # Halt --> halt operations
@@ -229,7 +231,7 @@ class CPU:
                 # Compare 2 values (2 arguments: regA & regB)
                 # Saw is cheatsheet this can be done in ALU. Use ALU here
                 self.alu("CMP", operand_a, operand_b)
-                # print("Register in CMP", self.reg)
+                print("Register in CMP", self.reg)
                 # print("Flags in CMP", self.reg[self.fl])
                 # print("--------------------")
                 self.pc += 3
@@ -239,8 +241,8 @@ class CPU:
                 print(f'JMP Register Address {operand_a}')
                 # set the PC to the address stored in the given register
                 self.pc = self.reg[operand_a]
-                print(f'PC to Addy in stored in given register {self.pc}')
-                print("--------------------")
+                print(f'JMP PC address {self.pc}')
+                # print("--------------------")
 
             # We need to add: JEQ & JNE
             elif ir == JEQ:
@@ -248,6 +250,7 @@ class CPU:
                 if FL == 0b00000001:
                     # jump to the address stored in the given register
                     self.pc = self.reg[operand_a]
+                    print(f'JEQ PC address {self.pc}')
                 else:
                     self.pc +=2
 
@@ -256,6 +259,7 @@ class CPU:
                 if FL != 0b00000001:
                     # jump to the address stored in the given register
                     self.pc = self.reg[operand_a]
+                    print(f'JEQ PC address {self.pc}')
                 else:
                     self.pc +=2
         
