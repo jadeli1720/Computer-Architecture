@@ -250,6 +250,8 @@ class CPU:
                     # jump to the address stored in the given register
                     reg_address = operand_a
                     self.pc = self.reg[reg_address]
+                else:
+                    self.pc +=2
         
             else:
                 print(f"Error, unknown command {ir}")
