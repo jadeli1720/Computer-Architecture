@@ -15,6 +15,7 @@ class CPU:
         # Add properties for any internal registers you need --> pc (program counter)
         self.pc = 0
         self.sp = 7 # Stack Pointer
+        self.fl = 0b00000000
 
 
     def load(self, filename):
@@ -57,11 +58,23 @@ class CPU:
             self.reg[reg_a] += self.reg[reg_b]
         elif op == "MUL": # --> multiply two register values
             self.reg[reg_a] *= self.reg[reg_b]
-        elif op == "CMP": 
-            # FL bits: 00000LGE --> how do we access LGE....by index 5,6,7 ?
-            # if regA = regB: set Equal [E] flag to 1 (True), otherwise 0 (False)
-            # if regA < regB: set Less [L] flag to 1 (True), otherwise 0 (False)
-            # if regA > regB: set Greater [G] flag to 1 (True), otherwise 0 (False)
+        elif op == "CMP": # Flags = FL they are internal registers
+            # FL     0b00000LGE 
+            #               |||
+            # CMP == 0b10100111 The last three 1's are the flags
+            FL = self.fl
+            # if regA = regB: set Equal [E] flag to 1 (True)
+            if self.reg[reg_a] == self.reg[reg_b]:
+                #           LGE
+                FL = 0b00000001
+            # if regA < regB: set Less [L] flag to 1 (True)
+            if self.reg[reg_a] < self.reg[reg_b]:
+                #           LGE
+                FL = 0b00000100
+            # if regA > regB: set Greater [G] flag to 1 (True)
+            if self.reg[reg_a] > self.reg[reg_b]:
+                #           LGE
+                FL = 0b00000010
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -215,6 +228,8 @@ class CPU:
 
                 # Saw is cheatsheet this can be done in ALU. Use ALU here
                 self.alu("CMP", operand_a, operand_b)
+                print("Register in CMP", self.reg)
+                print("Flags in CMP", self.reg[self.fl])
                 self.pc += 3
 
             else:
