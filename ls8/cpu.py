@@ -259,7 +259,7 @@ class CPU:
                 if FL != 0b00000001:
                     # jump to the address stored in the given register
                     self.pc = self.reg[operand_a]
-                    print(f'JEQ PC address {self.pc}')
+                    print(f'JNE PC address {self.pc}')
                 else:
                     self.pc +=2
         
