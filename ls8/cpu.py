@@ -67,17 +67,17 @@ class CPU:
             if self.reg[reg_a] == self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000001
-                print(f'Equal {FL}')
+                # print(f'Equal {FL}')
             # if regA < regB: set Less [L] flag to 1 (True)
             if self.reg[reg_a] < self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000100
-                print(f'Less {FL}')
+                # print(f'Less {FL}')
             # if regA > regB: set Greater [G] flag to 1 (True)
             if self.reg[reg_a] > self.reg[reg_b]:
                 #           LGE
                 FL = 0b00000010
-                print(f'Greater {FL}')
+                # print(f'Greater {FL}')
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -236,10 +236,9 @@ class CPU:
 
             elif ir == JMP:
                 # Jump to the address stored in the given register
-                reg_address = operand_a
-                print(f'JMP Register Address {reg_address}')
+                print(f'JMP Register Address {operand_a}')
                 # set the PC to the address stored in the given register
-                self.pc = self.reg[reg_address]
+                self.pc = self.reg[operand_a]
                 print(f'PC to Addy in stored in given register {self.pc}')
                 print("--------------------")
 
@@ -248,8 +247,15 @@ class CPU:
                 # if [E] flag is TRUE
                 if FL == 0b00000001:
                     # jump to the address stored in the given register
-                    reg_address = operand_a
-                    self.pc = self.reg[reg_address]
+                    self.pc = self.reg[operand_a]
+                else:
+                    self.pc +=2
+
+            elif ir == JNE:
+                # if [E] flag is clear
+                if FL != 0b00000001:
+                    # jump to the address stored in the given register
+                    self.pc = self.reg[operand_a]
                 else:
                     self.pc +=2
         
