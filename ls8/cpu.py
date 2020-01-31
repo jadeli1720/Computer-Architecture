@@ -15,8 +15,9 @@ class CPU:
         # Add properties for any internal registers you need --> pc (program counter)
         self.pc = 0
         self.sp = 7 # Stack Pointer
-        self.fl = 0b00000000
+        self.flag = [0] * 8
 
+    
 
     def load(self, filename):
         """Load a program into memory."""
@@ -53,6 +54,9 @@ class CPU:
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
+        self.flag[5] # L
+        self.flag[6] # G
+        self.flag[7] # E
 
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
@@ -62,22 +66,33 @@ class CPU:
             # FL     0b00000LGE 
             #               |||
             # CMP == 0b10100111 The last three 1's are the flags
-            FL = self.fl
-            # if regA = regB: set Equal [E] flag to 1 (True)
-            if self.reg[reg_a] == self.reg[reg_b]:
-                #           LGE
-                FL = 0b00000001
-                print(f'Equal Flag = 1: {FL}')
+            # print(f'A:{self.reg[reg_a]}, B:{self.reg[reg_b]}')
             # if regA < regB: set Less [L] flag to 1 (True)
             if self.reg[reg_a] < self.reg[reg_b]:
+                self.flag[5] = 1
+                self.flag[6] = 0
+                self.flag[7] = 0
                 #           LGE
-                FL = 0b00000100
-                print(f'Less Flag = 4: {FL}')
+                # self.flag = 0b00000100
+                # print(f'L Flag : {self.flag[5]}')
+            # if regA = regB: set Equal [E] flag to 1 (True)
+            elif self.reg[reg_a] == self.reg[reg_b]:
+                self.flag[5] = 0
+                self.flag[6] = 0
+                self.flag[7] = 1
+                #           LGE
+                # print(f'E Flag : {self.flag[7]}')
+                
             # if regA > regB: set Greater [G] flag to 1 (True)
-            if self.reg[reg_a] > self.reg[reg_b]:
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                self.flag[5] = 0
+                self.flag[6] = 1
+                self.flag[7] = 0
                 #           LGE
-                FL = 0b00000010
-                print(f'Greater Flag = 2: {FL}')
+                # print(f'G Flag : {self.flag[6]}')
+            else:
+                pass
+                # self.flag = 0b00000000
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -128,7 +143,7 @@ class CPU:
         PUSH = 0b01000101
         CALL = 0b01010000
         RET  = 0b00010001
-        CMP  = 0b10100111  #Can be put in the ALU according to the cheatsheet ?!?!
+        CMP  = 0b10100111  
         JMP  = 0b01010100
         JEQ  = 0b01010101
         JNE  = 0b01010110
@@ -140,7 +155,8 @@ class CPU:
             # needs to read the memory address that's stored in register PC, and store that result in IR
             ir = self.ram_read(self.pc)
             SP = self.sp
-            FL = self.fl
+            # FL = self.flag
+            
             # Use ram_read to read the bytes at PC + 1 and PC + 2 from ram variables operand_a and operand_b which are equivalent to each other 
             # operand_a: 00000000 --> R0 (register at index 0 in memory) is equal to
             # operand_b: 00001000 --> The value 8
@@ -156,7 +172,8 @@ class CPU:
                 # print('operands b',operand_b, self.ram[operand_b] )     # prints 8  and 0
                 # print('operands',operand_a  )
                 self.reg[operand_a] = operand_b
-                print(f'{self.reg[operand_a]} is in R{operand_a}' )
+                # print(f'{self.reg[operand_a]} is in R{operand_a}' )
+                # print(f'Binary: {bin(operand_b)}')
                 self.pc += 3
 
             elif ir == ADD:
@@ -231,9 +248,10 @@ class CPU:
                 # Compare 2 values (2 arguments: regA & regB)
                 # Saw is cheatsheet this can be done in ALU. Use ALU here
                 self.alu("CMP", operand_a, operand_b)
-                print("Register in CMP", self.reg)
-                # print("Flags in CMP", self.reg[self.fl])
+                # print("Register in CMP", self.reg)
+                # print(f"Flag: {self.flag}")
                 # print("--------------------")
+                
                 self.pc += 3
 
             elif ir == JMP:
@@ -243,23 +261,23 @@ class CPU:
                 self.pc = self.reg[operand_a]
                 print(f'JMP PC address {self.pc}')
                 # print("--------------------")
-
-            # We need to add: JEQ & JNE
             elif ir == JEQ:
-                # if [E] flag is TRUE
-                if FL == 0b00000001:
-                    # jump to the address stored in the given register
+                
+                # print(f"CMP: {CMP}, E: {E}")
+                # if [E] flag is true:
+                if self.flag[7] == 1:
                     self.pc = self.reg[operand_a]
-                    print(f'JEQ PC address {self.pc}')
+                    # print(f'JEQ PC address {self.pc}')
                 else:
-                    self.pc +=2
+                    print("Else statement")
+                    self.pc += 2
 
             elif ir == JNE:
                 # if [E] flag is clear
-                if FL != 0b00000001:
+                if self.flag[7] != 1:
                     # jump to the address stored in the given register
                     self.pc = self.reg[operand_a]
-                    print(f'JNE PC address {self.pc}')
+                    # print(f'JNE PC address {self.pc}')
                 else:
                     self.pc +=2
         
